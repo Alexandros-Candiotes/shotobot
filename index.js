@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 const {
     Client,
@@ -16,9 +15,6 @@ const client = new Client({
     ],
 });
 
-const TARGET_BOT_ID = "792827809797898240"; // Replace with the actual bot ID
-const GUILD_ID = "1252365580812550165";
-const CLIENT_ID="1302922587910967306"
 const SUMMON_IMAGE_WAIT_MINUTES = 20; // Default wait time for summon.webp
 let userDropTimers = {}; // Store timers for each user
 let waitingForResponse = {}; // Track users waiting for the next message
@@ -28,7 +24,7 @@ function getWaitTimeFromMessage(message) {
     const match = message.content.match(
         /you must wait \*\*(\d+)\s*minutes\*\*/,
     );
-    if (message.author.id === TARGET_BOT_ID && match) {
+    if (message.author.id === process.env.TARGET_BOT_ID && match) {
         return parseInt(match[1], 10); // Return wait time in minutes if found
     }
     return null;
@@ -37,7 +33,7 @@ function getWaitTimeFromMessage(message) {
 // Function to check for summon.webp image
 function hasSummonImage(message) {
     return (
-        message.author.id === TARGET_BOT_ID &&
+        message.author.id === process.env.TARGET_BOT_ID &&
         message.attachments.some((attachment) =>
             attachment.url.includes("summon.webp"),
         )
@@ -59,7 +55,7 @@ async function registerCommands() {
         console.log("Started refreshing application (/) commands.");
 
         await rest.put(
-            Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
+            Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
             {
                 body: commands,
             },
